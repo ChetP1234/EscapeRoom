@@ -42,8 +42,8 @@ public class EscapeRoom
   {      
     // welcome message
     System.out.println("Welcome to EscapeRoom!");
-    System.out.println("Get to the other side of the room, avoiding walls and invisible traps,");
-    System.out.println("pick up all the prizes.\n");
+    System.out.println("Type 'help' for game objective and commands. \n");
+
     
     GameGUI game = new GameGUI();
     game.createBoard();
@@ -65,75 +65,99 @@ public class EscapeRoom
     boolean play = true;
     while (play)
     {
-      System.out.print("Enter your movement: ");
-      String movement = UserInput.getValidInput(validCommands);
-      if (movement.equals("right") || movement.equals("r")) { 
-        game.movePlayer(60, 0);
-        score++; 
-      } 
-      if (movement.equals("left") || movement.equals("l")) { 
-        game.movePlayer(-60, 0);
-        score++; 
-      }
-      if (movement.equals("up") || movement.equals("u")) { 
-        game.movePlayer(0, -60);
-        score++; 
-      }
-      if (movement.equals("down") || movement.equals("d")) { 
-          game.movePlayer(0, 60);
-          score++; 
-      }
-      if (movement.equals("quit") || movement.equals("q")) {
-        //game.endGame();
-        play = false;
-      }
-      if (movement.equals("pickup") || movement.equals("p")) { 
-        game.pickupPrize();
-        score++; 
-      }
-      if (movement.equals("replay")) { 
-        game.replay();
-      }
-      if (movement.equals("jumpup") || movement.equals("ju")) {
-        game.movePlayer(0, -120);
-        score++; 
-      }
-      if (movement.equals("jumpright") || movement.equals("jr")) { 
-        game.movePlayer(120, 0);
-        score++; 
-      }
-      if (movement.equals("jumpleft") || movement.equals("jl")) {
-        game.movePlayer(-120, 0);
-        score++; 
-      }
-      if (movement.equals("jumpdown") || movement.equals("jd")) { 
-        game.movePlayer(0, 120);
-        score++; 
-      }
-      if  (movement.equals("help") || movement.equals("?")) { 
-        System.out.println("To use these functions you must type the command in the terminal");
-        System.out.println("right or r: move the player 1 square right");
-        System.out.println("left or l: move the player 1 square left");
-        System.out.println("up or u: move the player 1 square up");
-        System.out.println("down or d: move the player 1 square down");
-        System.out.println("quit or q: quit the game");
-        System.out.println("replay: restart the game");
-        System.out.println("pickup or p: pickup the prize");
-        System.out.println("jumpup or ju: jumps the player 2 squares up");
-        System.out.println("jumpdown or jd: jump the player 2 squares down");
-        System.out.println("jumpright or jr: jump the player 2 squares right");
-        System.out.println("jumpleft or lf: jump the player 2 squares left");
-        System.out.println("help or ?: get a list of valid commands");
-      }
-      if (game.x >430 && game.y>250){
-        game.endGame();
-        System.out.println("score=" + score);
-        System.out.println("steps=" + game.getSteps());
-      }
-  }
-
     
+      /* TODO: get all the commands working */
+      /* Your code here */
+      String thing = UserInput.getValidInput(validCommands);
+      if (game.isTrap(60, 0) || game.isTrap(-60, 0) || game.isTrap(0, 60) || game.isTrap(0, -60)) {
+        System.out.print("There's a trap nearby! Do you want to spring it? (yes/no): ");
+        String springTrap = UserInput.getValidInput(new String[]{"yes", "no"});
+        if (springTrap.equals("yes")) {
+            score += game.springTrap(60, 0);
+        }
+      }
+
+      switch (thing) {
+        case "right":
+        case "r":
+            score += game.movePlayer(m, 0);
+            break;
+        case "left":
+        case "l":
+            score += game.movePlayer(-m, 0);
+            break;
+        case "up":
+        case "u":
+            score += game.movePlayer(0, -m);
+            break;
+        case "down":
+        case "d":
+            score += game.movePlayer(0, m);
+            break;
+        case "jump":
+        case "jr":
+            if (!game.isTrap(2*m, 0)) {
+                score += game.movePlayer(2*m, 0);
+            } else {
+                System.out.println("Cannot jump over a trap!");
+            }
+            break;
+        case "jumpleft":
+        case "jl":
+            if (!game.isTrap(-2*m, 0)) {
+                score += game.movePlayer(-2*m, 0);
+            } else {
+                System.out.println("Cannot jump over a trap!");
+            }
+            break;
+        case "jumpup":
+        case "ju":
+            if (!game.isTrap(0, -2*m)) {
+                score += game.movePlayer(0, -2*m);
+            } else {
+                System.out.println("Cannot jump over a trap!");
+            }
+            break;
+        case "jumpdown":
+        case "jd":
+            if (!game.isTrap(0, 2*m)) {
+                score += game.movePlayer(0, 2*m);
+            } else {
+                System.out.println("Cannot jump over a trap!");
+            }
+            break;
+        case "pickup":
+        case "p":
+            score += game.pickupPrize();
+            break;
+        case "quit":
+        case "q":
+            play = false;
+            break;
+        case "replay":
+            score += game.replay();
+            break;
+        case "help":
+        case "?":
+          System.out.println("\nWelcome to our Escape Game!");
+          System.out.println("Objective: pick up all coins and escape to the far right");
+          System.out.println("Use up, down, left, right, or u, d, l, r, to move");
+          System.out.println("use jump, jumpup, jumpdown, jumpleft or jr, ju, jd, jl to skip a space");
+          System.out.println("Use pickup, or p, to pickup a coin");
+          System.out.println("Use quit, or q, to end the game once you reach the far right side");
+          System.out.println("Use replay to restart after reaching the far right side.");
+            break;
+        default:
+            System.out.println("Invalid input.");
+            score -= 10;
+        
+      }
+      
+    }
+
+    score += game.endGame();
+
+    System.out.println("score=" + score);
+    System.out.println("steps=" + game.getSteps());
   }
 }
-
-        
