@@ -154,7 +154,7 @@ public class GameGUI extends JComponent
         int startX =  (int)r.getX();
         int endX  =  (int)r.getX() + (int)r.getWidth();
         int startY =  (int)r.getY();
-        int endY = (int) r.getY() + (int)r.getHeight();
+        int endY = (int)r.getY() + (int)r.getHeight();
 
         // (Note: the following if statements could be written as huge conditional but who wants to look at that!?)
         // moving RIGHT, check to the right
@@ -271,7 +271,6 @@ public class GameGUI extends JComponent
 
     for (Rectangle p: prizes)
     {
-      // DEBUG: System.out.println("prizex:" + p.getX() + " prizey:" + p.getY() + "\npx: " + px + " py:" + py);
       // if location has a prize, pick it up
       if (p.getWidth() > 0 && p.contains(px, py))
       {
@@ -283,6 +282,7 @@ public class GameGUI extends JComponent
     }
     System.out.println("OOPS, NO PRIZE HERE");
     return -prizeVal;  
+    
   }
 
   /**
@@ -431,6 +431,7 @@ public class GameGUI extends JComponent
       Rectangle r;
       r = new Rectangle((w*s + 15),(h*s + 15), 15, 15);
       prizes[numPrizes] = r;
+      
      }
   }
 
